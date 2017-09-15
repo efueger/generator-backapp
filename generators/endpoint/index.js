@@ -101,5 +101,19 @@ module.exports = class extends Generator {
 
     fs.appendFileSync(`${process.cwd()}/src/api/${folder}/validators.js`, `\n` + rendered);
 
+    // API tests
+    const test = fs.readFileSync(`${__dirname}/templates/tests_api/test.js`, 'utf-8');
+    rendered = ejs.render(test, {
+      METHOD: this.props.method,
+      URL: this.props.url
+    }, (err, str) => str)
+    if (!fs.existsSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`)) {
+      fs.writeFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, "");
+      
+      const template = fs.readFileSync(`${__dirname}/templates/tests_api/template.js`)
+      fs.appendFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, template);
+    }
+
+    fs.appendFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, `\n` + rendered);
   }
 };

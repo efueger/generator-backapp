@@ -1,19 +1,19 @@
-# generator-yeahmain [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-backapp [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
 > 
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-yeahmain using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-backapp using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo
-npm install -g generator-yeahmain
+npm install -g generator-backapp
 ```
 
 Then generate your new project:
 
 ```bash
-yo yeahmain
+yo backapp
 ```
 
 ## Getting To Know Yeoman
