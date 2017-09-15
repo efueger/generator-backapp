@@ -1,0 +1,116 @@
+box: node:latest
+services:
+    - mongo
+dev:
+  steps:
+    - script:
+        name: install dependencies
+        code: yarn
+    - internal/watch:
+        code: <%= RUN_APP_COMMAND %>
+        reload: true
+build:
+  steps:
+    - script:
+        name: echo nodejs information
+        code: |
+          echo "node version $(node -v) running"
+          echo "yarn version $(yarn --version) running"
+    - script:
+        name: set yarn cache
+        code: yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    - script:
+        name: install dependencies
+        code: <%= INSTALL_COMMAND %>
+    - script:
+        name: test
+        code: <%= TEST_COMMAND %>
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+        channel: $PROJECT
+        username: werckerbot
+<%= DEPLOY_STEP_1 %>:
+  steps:
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        repository: $DOCKER_REPO
+        tag: $WERCKER_GIT_COMMIT
+        ports: <%- PORT1 %>
+        cmd: <%- CMD1 %>
+    - add-ssh-key:
+        keyname: <%= SSH_KEY_FILENAME %>
+    - add-to-known_hosts:
+        hostname: $IP
+    - script:
+        name: docker login
+        code: ssh $SSH_USER@$IP docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
+    - script:
+        name: pull latest image
+        code: ssh $SSH_USER@$IP docker pull $DOCKER_REPO:$WERCKER_GIT_COMMIT
+    - script:
+        name: stop running container
+        code: ssh $SSH_USER@$IP docker stop <%= CONTAINER1_NAME %> || echo 'failed to stop running container'
+    - script:
+        name: remove stopped container
+        code: ssh $SSH_USER@$IP docker rm <%= CONTAINER1_NAME %> || echo 'failed to remove stopped container'
+    - script:
+        name: remove image behind stopped container
+        code: ssh $SSH_USER@$IP docker rmi $DOCKER_REPO:current_dev || echo 'failed to remove image behind stopped container'
+    - script:
+        name: tag newly pulled image
+        code: ssh $SSH_USER@$IP docker tag $DOCKER_REPO:$WERCKER_GIT_COMMIT $DOCKER_REPO:current_dev
+    - script:
+        name: check and run mongo
+        code: ssh $SSH_USER@$IP docker run -d -p <%= MONGO1_IP %> --name mongo_dev mongo || echo "Already started mongo"
+    - script:
+        name: run new container
+        code: ssh $SSH_USER@$IP docker run --link=mongo_dev:mongodb -d -p <%= CONTAINER1_IP %> --name <%= CONTAINER1_NAME %> $DOCKER_REPO:current_dev
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+        channel: $PROJECT
+        username: werckerbot
+<%= DEPLOY_STEP_2 %>:
+  steps:
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        repository: $DOCKER_REPO
+        tag: $WERCKER_GIT_COMMIT
+        ports: <%- PORT2 %>
+        cmd: <%- CMD2 %>
+    - add-ssh-key:
+        keyname: <%= SSH_KEY_FILENAME %>
+    - add-to-known_hosts:
+        hostname: $IP
+    - script:
+        name: docker login
+        code: ssh $SSH_USER@$IP docker login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD"
+    - script:
+        name: pull latest image
+        code: ssh $SSH_USER@$IP docker pull $DOCKER_REPO:$WERCKER_GIT_COMMIT
+    - script:
+        name: stop running container
+        code: ssh $SSH_USER@$IP docker stop <%= CONTAINER2_NAME %> || echo 'failed to stop running container'
+    - script:
+        name: remove stopped container
+        code: ssh $SSH_USER@$IP docker rm <%= CONTAINER2_NAME %> || echo 'failed to remove stopped container'
+    - script:
+        name: remove image behind stopped container
+        code: ssh $SSH_USER@$IP docker rmi $DOCKER_REPO:current_prod || echo 'failed to remove image behind stopped container'
+    - script:
+        name: tag newly pulled image
+        code: ssh $SSH_USER@$IP docker tag $DOCKER_REPO:$WERCKER_GIT_COMMIT $DOCKER_REPO:current_prod
+    - script:
+        name: check and run mongo
+        code: ssh $SSH_USER@$IP docker run -d -p <%= MONGO2_IP %> --name mongo_dev mongo || echo "Already started mongo"
+    - script:
+        name: run new container
+        code: ssh $SSH_USER@$IP docker run --link=mongo_prod:mongodb -d -p <%= CONTAINER2_IP %> --name <%= CONTAINER2_NAME %> $DOCKER_REPO:current_prod
+  after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+        channel: $PROJECT
+        username: werckerbot

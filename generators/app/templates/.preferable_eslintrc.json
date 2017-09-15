@@ -1,0 +1,64 @@
+{
+    "parser": "babel-eslint",
+    "plugins": [
+        "react"
+    ],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "jest": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "never"
+        ],
+        "arrow-spacing": ["error", { "before": true, "after": true }],
+        "block-spacing": ["error", "always"],
+        "brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+        "camelcase": "error",
+        "curly": ["error", "multi-line"],
+        "eol-last": ["error", "always"],
+        "eqeqeq": ["warn", "always", { "null": "ignore" }],
+        "func-call-spacing": ["error", "never"],
+        "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+        "lines-around-directive": ["error", { "before": "never", "after": "always" }],
+        "newline-before-return": "error",
+        "newline-per-chained-call": ["warn", { "ignoreChainWithDepth": 3 }],
+        "no-console": "warn",
+        "no-lonely-if": "error",
+        "no-process-env": "warn",
+        "no-tabs": "error",
+        "no-var": "warn",
+        "object-curly-spacing": ["error", "always"],
+        // "padded-blocks": ["error", "always"],
+        "prefer-const": "warn",
+        "space-before-blocks": ["error", "always"],
+        "space-before-function-paren": ["error", { "named": "always", "anonymous": "always" }],
+        "keyword-spacing": ["error", { "before": true, "after": true }],
+        "eol-last": ["error", "always"],
+        "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
+        "no-trailing-spaces": "error"
+    }
+}

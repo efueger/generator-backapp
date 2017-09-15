@@ -1,0 +1,14 @@
+{
+    "env": {
+      "development": {
+        "plugins": [
+          "babel-plugin-runtyper"
+        ]
+      }
+    },
+    "plugins": [
+      ["module-resolver", { "root": ["./src"] }]
+    ],
+    "presets": ["import-export"]
+  }
+  
