@@ -8,3 +8,4 @@ export const MONGO_URL = `mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}`
 export const NODE_ENV = process.env.NODE_ENV
 export const PORT = process.env.EXPRESS_PORT
 export const URL = `${HOST}:${PORT}`
+export const JWT_SECRET = 'secret'

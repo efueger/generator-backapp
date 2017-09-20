@@ -23,7 +23,7 @@ module.exports = class extends Generator {
   writing() {
     let filename = this.props.error.match(/^(.+)[^Error]/g).join('');
     filename = filename[0].toLowerCase() + filename.substring(1);
-    
+
     this.fs.copyTpl(
       this.templatePath('error.js'),
       this.destinationPath(`src/errors/${filename}.js`),
@@ -32,11 +32,10 @@ module.exports = class extends Generator {
 
     const currentErrorIndexFile = fs.readFileSync(`${process.cwd()}/src/errors/index.js`, 'utf-8');
     let pos = currentErrorIndexFile.search(/export/gm);
-    let bufferImport = currentErrorIndexFile.substring(0, pos-1) + `import ${this.props.error} from './${filename}'\n`;
+    let bufferImport = currentErrorIndexFile.substring(0, pos - 1) + `import ${this.props.error} from './${filename}'\n`;
 
     pos = currentErrorIndexFile.search(/{/gm);
-    let buffer = `${bufferImport}\nexport {\n${this.props.error},${currentErrorIndexFile.substring(pos+1, currentErrorIndexFile.length)}`;
+    let buffer = `${bufferImport}\nexport {\n${this.props.error},${currentErrorIndexFile.substring(pos + 1, currentErrorIndexFile.length)}`;
     fs.writeFileSync(`${process.cwd()}/src/errors/index.js`, buffer, 'utf-8');
   }
-    
 };

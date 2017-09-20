@@ -11,11 +11,11 @@ module.exports = class extends Generator {
     const prompts = [{
       type: 'input',
       name: 'MODEL_NAME',
-      message: 'Model name:',
+      message: 'Model name:'
     }, {
       type: 'input',
       name: 'FIELDS',
-      message: 'Model fields(:type):',
+      message: 'Model fields(:type):'
     }];
 
     return this.prompt(prompts).then(props => {
@@ -38,17 +38,16 @@ module.exports = class extends Generator {
       this.templatePath('model.js'),
       this.destinationPath(`src/core/models/${modelName}.js`),
       {MODEL_NAME: this.props.MODEL_NAME,
-      FIELDS: fields}
+        FIELDS: fields}
     );
 
     const currentModelIndexFile = fs.readFileSync(`${process.cwd()}/src/core/models/index.js`, 'utf-8');
     let pos = currentModelIndexFile.search(/export/gm);
-    let bufferImport = `${currentModelIndexFile.substring(0, pos-1)}import ${this.props.MODEL_NAME} from './${modelName}'\n`;
+    let bufferImport = `${currentModelIndexFile.substring(0, pos - 1)}import ${this.props.MODEL_NAME} from './${modelName}'\n`;
     let bufferExport = `${currentModelIndexFile.substring(currentModelIndexFile.search(/export/gm), currentModelIndexFile.length)}`;
 
     pos = bufferExport.search(/}/gm);
     let buffer = `${bufferImport}\n${bufferExport.substring(0, pos)}${this.props.MODEL_NAME},\n}`;
     fs.writeFileSync(`${process.cwd()}/src/core/models/index.js`, buffer, 'utf-8');
   }
-    
 };

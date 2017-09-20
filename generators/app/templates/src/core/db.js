@@ -23,13 +23,6 @@ export default class DB {
     return mongoose.connection.db.dropDatabase()
 
   }
-
-  static feed () {
-
-    return feedDB()
-
-  }
-
 }
 
 function mongodbOpenConnection (mongourl) {

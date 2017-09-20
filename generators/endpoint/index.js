@@ -48,7 +48,7 @@ module.exports = class extends Generator {
 
   writing() {
     const folder = this.props.url.split('/')[1];
-    // routes
+    // Routes
     const route = fs.readFileSync(`${__dirname}/templates/routes/${this.props.method}.js`, 'utf-8');
     let rendered = ejs.render(route, {
       URL: this.props.url,
@@ -67,36 +67,36 @@ module.exports = class extends Generator {
       fs.mkdirSync(`${process.cwd()}/src/api/${folder}`);
     }
     if (!fs.existsSync(`${process.cwd()}/src/api/${folder}/routes.js`)) {
-      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/routes.js`, "");
-      
-      const template = fs.readFileSync(`${__dirname}/templates/routes/template.js`)
+      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/routes.js`, '');
+
+      const template = fs.readFileSync(`${__dirname}/templates/routes/template.js`);
       fs.appendFileSync(`${process.cwd()}/src/api/${folder}/routes.js`, template);
     }
 
     fs.appendFileSync(`${process.cwd()}/src/api/${folder}/routes.js`, `\n` + rendered);
 
-    // controllers
+    // Controllers
     const controller = fs.readFileSync(`${__dirname}/templates/controllers/controllers.js`, 'utf-8');
     rendered = ejs.render(controller, {
       CONTROLLER: this.props.CONTROLLER,
       ACTION: this.props.ACTION
-    }, (err, str) => str)
+    }, (err, str) => str);
     if (!fs.existsSync(`${process.cwd()}/src/api/${folder}/controllers.js`)) {
-      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/controllers.js`, "");
-      
-      const template = fs.readFileSync(`${__dirname}/templates/controllers/template.js`)
+      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/controllers.js`, '');
+
+      const template = fs.readFileSync(`${__dirname}/templates/controllers/template.js`);
       fs.appendFileSync(`${process.cwd()}/src/api/${folder}/controllers.js`, template);
     }
 
     fs.appendFileSync(`${process.cwd()}/src/api/${folder}/controllers.js`, `\n` + rendered);
 
-    // validators
+    // Validators
     const validator = fs.readFileSync(`${__dirname}/templates/validators/validator.js`, 'utf-8');
     rendered = ejs.render(validator, {
       VALIDATOR: this.props.VALIDATOR
-    }, (err, str) => str)
+    }, (err, str) => str);
     if (!fs.existsSync(`${process.cwd()}/src/api/${folder}/validators.js`)) {
-      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/validators.js`, "");
+      fs.writeFileSync(`${process.cwd()}/src/api/${folder}/validators.js`, '');
     }
 
     fs.appendFileSync(`${process.cwd()}/src/api/${folder}/validators.js`, `\n` + rendered);
@@ -106,11 +106,11 @@ module.exports = class extends Generator {
     rendered = ejs.render(test, {
       METHOD: this.props.method,
       URL: this.props.url
-    }, (err, str) => str)
+    }, (err, str) => str);
     if (!fs.existsSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`)) {
-      fs.writeFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, "");
-      
-      const template = fs.readFileSync(`${__dirname}/templates/tests_api/template.js`)
+      fs.writeFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, '');
+
+      const template = fs.readFileSync(`${__dirname}/templates/tests_api/template.js`);
       fs.appendFileSync(`${process.cwd()}/src/api/__tests__/${folder}.spec.js`, template);
     }
 

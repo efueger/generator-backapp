@@ -1,8 +1,9 @@
 import testActions from './testActions'
+import user from './user'
 
 import { ActionTypeError } from 'errors'
 
-export const actions = Object.assign({}, testActions)
+export const actions = Object.assign({}, testActions, user)
 
 export default function dispatch (actionType, ...args) {
 
