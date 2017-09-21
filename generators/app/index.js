@@ -1,6 +1,7 @@
 'use strict';
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
+const fs = require('fs');
 
 module.exports = class extends Generator {
   prompting() {
@@ -24,6 +25,16 @@ module.exports = class extends Generator {
       name: 'eslint',
       message: 'Choose ESlint mode:',
       choices: ['Standart', 'Preferable']
+    },
+    {
+      type: 'confirm',
+      name: 'mailgun',
+      message: 'Would you like to setup Mailgun?'
+    },
+    {
+      type: 'confirm',
+      name: 'nexmo',
+      message: 'Would you like to setup Nexmo?'
     }];
 
     return this.prompt(prompts).then(props => {
@@ -32,13 +43,6 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.fs.copyTpl(
-      this.templatePath('package.json'),
-      this.destinationPath('package.json'),
-      {appName: this.props.appName,
-        appDescription: this.props.appDescription,
-        author: this.props.author}
-    );
     this.fs.copy(
       this.templatePath('nodemon.json'),
       this.destinationPath('nodemon.json')
@@ -70,6 +74,66 @@ module.exports = class extends Generator {
       this.templatePath('.env'),
       this.destinationPath('.env')
     );
+    if (this.props.nexmo === false && this.props.mailgun === false) {
+      this.fs.delete('src/core/services')
+      this.fs.delete('src/core/services-mailgun')
+      this.fs.delete('src/core/services-nexmo')
+      this.fs.copyTpl(
+      this.templatePath('package.json'),
+      this.destinationPath('package.json'),
+      {appName: this.props.appName,
+        appDescription: this.props.appDescription,
+        author: this.props.author}
+      );
+    } else if (this.props.nexmo === true && this.props.mailgun === false) {
+      this.fs.copyTpl(
+        this.templatePath('nexmo-package.json'),
+        this.destinationPath('package.json'),
+        {appName: this.props.appName,
+          appDescription: this.props.appDescription,
+          author: this.props.author}
+        );
+        this.fs.delete('src/core/services')
+        this.fs.delete('src/core/services-mailgun')
+        this.fs.append('src/config/index.js', `
+export const NEXMO_FROM = 'VALUE'
+export const NEXMO_KEY = 'VALUE'
+export const NEXMO_SECRET = 'VALUE'
+        `)
+    } else if (this.props.nexmo === false && this.props.mailgun === true) {
+      this.fs.copyTpl(
+        this.templatePath('mailgun-package.json'),
+        this.destinationPath('package.json'),
+        {appName: this.props.appName,
+          appDescription: this.props.appDescription,
+          author: this.props.author}
+        );
+        this.fs.delete('src/core/services')
+        this.fs.delete('src/core/services-nexmo')
+        this.fs.append('src/config/index.js', `
+export const MAILGUN_DOMAIN = 'VALUE'
+export const MAILGUN_FROM = 'VALUE'
+export const MAILGUN_KEY = 'VALUE'
+        `)
+    } else {
+      this.fs.copyTpl(
+        this.templatePath('whole-package.json'),
+        this.destinationPath('package.json'),
+        {appName: this.props.appName,
+          appDescription: this.props.appDescription,
+          author: this.props.author}
+        );
+        this.fs.append('src/config/index.js', `
+export const MAILGUN_DOMAIN = 'VALUE'
+export const MAILGUN_FROM = 'VALUE'
+export const MAILGUN_KEY = 'VALUE'
+export const NEXMO_FROM = 'VALUE'
+export const NEXMO_KEY = 'VALUE'
+export const NEXMO_SECRET = 'VALUE'
+        `)
+        this.fs.delete('src/core/services-mailgun')
+        this.fs.delete('src/core/services-nexmo')
+    }
     this.fs.copy(
       this.templatePath('.gitignore'),
       this.destinationPath('.gitignore')
