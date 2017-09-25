@@ -5,8 +5,8 @@
     "scripts": {
       "lint": "./node_modules/.bin/eslint src",
       "start": "nodemon ./bin/server.js",
-      "start:prod": "NODE_ENV=production node ./bin/server.js",
-      "test": "MONGO_HOST=localhost MONGO_PORT=27017 ./node_modules/.bin/jest"
+      "start:prod": "<%= windows ? 'cross-env ' : '' %>NODE_ENV=production node ./bin/server.js",
+      "test": "<%= windows ? 'cross-env ' : '' %>MONGO_HOST=localhost MONGO_PORT=27017 ./node_modules/.bin/jest"
     },
     "repository": {},
     "author": "<%= author %>",

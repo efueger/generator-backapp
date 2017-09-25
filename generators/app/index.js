@@ -35,6 +35,10 @@ module.exports = class extends Generator {
       type: 'confirm',
       name: 'nexmo',
       message: 'Would you like to setup Nexmo?'
+    }, {
+      type: 'confirm',
+      name: 'windows',
+      message: 'Are you develop on Windows?'
     }];
 
     return this.prompt(prompts).then(props => {
@@ -83,7 +87,8 @@ module.exports = class extends Generator {
       this.destinationPath('package.json'),
       {appName: this.props.appName,
         appDescription: this.props.appDescription,
-        author: this.props.author}
+        author: this.props.author,
+        windows: this.props.windows}
       );
     } else if (this.props.nexmo === true && this.props.mailgun === false) {
       this.fs.copyTpl(
@@ -91,7 +96,8 @@ module.exports = class extends Generator {
         this.destinationPath('package.json'),
         {appName: this.props.appName,
           appDescription: this.props.appDescription,
-          author: this.props.author}
+          author: this.props.author,
+          windows: this.props.windows}
         );
         this.fs.delete('src/core/services')
         this.fs.delete('src/core/services-mailgun')
@@ -106,7 +112,8 @@ export const NEXMO_SECRET = 'VALUE'
         this.destinationPath('package.json'),
         {appName: this.props.appName,
           appDescription: this.props.appDescription,
-          author: this.props.author}
+          author: this.props.author,
+          windows: this.props.windows}
         );
         this.fs.delete('src/core/services')
         this.fs.delete('src/core/services-nexmo')
@@ -121,7 +128,8 @@ export const MAILGUN_KEY = 'VALUE'
         this.destinationPath('package.json'),
         {appName: this.props.appName,
           appDescription: this.props.appDescription,
-          author: this.props.author}
+          author: this.props.author,
+          windows: this.props.windows}
         );
         this.fs.append('src/config/index.js', `
 export const MAILGUN_DOMAIN = 'VALUE'
@@ -142,5 +150,8 @@ export const NEXMO_SECRET = 'VALUE'
 
   install() {
     this.installDependencies({bower: false});
+    if (this.props.windows === true) {
+      this.npmInstall(['cross-env'], { 'save-dev': true });
+    }
   }
 };
