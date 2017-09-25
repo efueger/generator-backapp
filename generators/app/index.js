@@ -74,9 +74,10 @@ module.exports = class extends Generator {
       this.templatePath('.babelrc'),
       this.destinationPath('.babelrc')
     );
-    this.fs.copy(
+    this.fs.copyTpl(
       this.templatePath('.env'),
-      this.destinationPath('.env')
+      this.destinationPath('.env'),
+      {db_name: this.props.appName}
     );
     if (this.props.nexmo === false && this.props.mailgun === false) {
       this.fs.delete('src/core/services')

@@ -1,10 +1,17 @@
 import mongoose from 'mongoose'
 import { MONGO_URL } from 'config'
+import generateDBData from './generator/generateDataToDB'
 
 // Use native promises for mongoose
 mongoose.Promise = global.Promise
 
 export default class DB {
+
+  static generateData () {
+
+    return generateDBData()
+    
+  }
 
   static openConnection () {
 
