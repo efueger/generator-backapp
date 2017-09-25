@@ -1,5 +1,4 @@
 import { errorHandler } from './middlewares'
-import testModel from './testModel/routes'
 import user from './user/routes'
 
 /**
@@ -8,7 +7,6 @@ import user from './user/routes'
 export default function useAPI (app) {
 
   app.use('/api',
-    testModel,
     user,
 
     // Handle errors from endpoints above
